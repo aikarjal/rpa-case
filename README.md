@@ -10,7 +10,7 @@ The case example consis of a dockerized environment that has the following conta
 
 ## Running the environment
 
-Running the environment will require Docker. There is a Makefile that handles calling Docker commands so to run that, GNU Make is also required.
+Running the environment will require `Docker`. There is a Makefile that handles calling Docker commands so to run that, `GNU Make` is also required.
 
 Makefile instructions:
 
@@ -19,7 +19,10 @@ Help:           'make'
 Build images:   'make docker/build'
 Run env:        'make env/run'
 Stop env:       'make env/stop'
+New message:    'make message'
 ```
+
+The convenience target `make message` will use the API service to generate a new message in the messages folder that has the ID of the current timestamp. This target will use `curl` to call the API.
 
 Running the environment without Make:
 

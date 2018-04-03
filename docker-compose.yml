@@ -7,6 +7,7 @@ services:
      - "1881:1880"
     volumes:
      - ./application/message-check-api/data:/data
+     - ./messages:/messages
 
   web-app:
     build: application/web-app
