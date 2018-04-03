@@ -1,6 +1,7 @@
 COMPOSE_FILES = -f docker-compose.yml
 DOCKER_COMPOSE = docker-compose
 API_PORT = 1881
+ID = 0
 
 .DEFAULT_GOAL := help
 .PHONY: help
@@ -24,7 +25,8 @@ env/stop: ## Stop case environment
 
 .PHONY: message
 message: ## Generate new message from current timestamp
-	curl -X POST localhost:$(API_PORT)/test
+
+	curl -H "Content-Type: application/json" -X POST -d '{"id":$(ID)}' localhost:$(API_PORT)/generate
 
 .PHONY: api/test
 api/test:

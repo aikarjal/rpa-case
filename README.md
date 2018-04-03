@@ -2,6 +2,8 @@
 
 A case example for developing RPA solutions.
 
+The case process involves reading 'messages' from local files, posting message content to a REST API, making decisions based on the API call results, using a web application to store message contents, storing data into Excel spreadsheets, and logging any result or error from the process.
+
 The case example consis of a dockerized environment that has the following containers:
 
 * Message checker REST API
@@ -22,7 +24,7 @@ Stop env:       'make env/stop'
 New message:    'make message'
 ```
 
-The convenience target `make message` will use the API service to generate a new message in the messages folder that has the ID of the current timestamp. This target will use `curl` to call the API.
+The convenience target `make message` will use the API service to generate a new message in the messages folder that has the ID of the current timestamp. This target will use `curl` to call the API. To create a message with a specific id, use `make message ID=<int>`.
 
 Running the environment without Make:
 
@@ -36,11 +38,11 @@ Stop env:       'docker-compose down'
 
 ### TLDR;
 
-1. Read files from local 'messages' folder, parse one message per line. Remove files when read.
+1. Read files from local ./messages folder, parse one message per line. Remove files when read.
 2. Post JSON with message id and hash as JSON `{"id":<id>,"hash":"<hash>"}` to `localhost:1881/checkMessage`.
 3. API response will be the following: 200, 400, or 500. When succesful, interpret payload JSON:
-  1. confirm - insert content into an Excel, then insert data into web app
-  2. accept - insert data into web app
+  1. confirm - insert content into an Excel spreadsheet, then insert data into web app
+  2. accept - insert data directly into web app
   3. combine - wait for another message with specified id and combine both into web app
 4. The web app is located at `localhost:1880/ui` and is self-explanatory to use. Excel can be stored locally.
 5. A log must show how many different results have been received and how many errors have occurred.
