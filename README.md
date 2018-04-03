@@ -4,10 +4,9 @@ A case example for developing RPA solutions.
 
 The case example consis of a dockerized environment that has the following containers:
 
-* SFTP server for storing incoming files
-* Message checker API
-* Web app for inserting data
-* Database server for storing data from the web app
+* Message checker REST API
+* Database server for storing message id and hash data
+* Web app for inserting data into the database
 
 ## Running the environment
 
@@ -34,7 +33,7 @@ Stop env:       'docker-compose down'
 
 ### TLDR;
 
-1. Read files from SFTP (`localhost:2222`), parse one message per line. Remove files when read.
+1. Read files from local 'messages' folder, parse one message per line. Remove files when read.
 2. Post JSON with message id and hash as JSON `{"id":<id>,"hash":"<hash>"}` to `localhost:1881/checkMessage`.
 3. API response will be the following: 200, 400, or 500. When succesful, interpret payload JSON:
   1. confirm - insert content into an Excel, then insert data into web app
@@ -46,7 +45,7 @@ Stop env:       'docker-compose down'
 
 ### Long version
 
-There is an SFTP server that receives message files from an external system. These message files contain one or more individual messages, each on its own new line. A message consists of an integer id and the SHA256 hash of that id in the following format:
+There is a folder labelled 'messages' that receives message files from an external system. These message files contain one or more individual messages, each on its own new line. A message consists of an integer id and the SHA256 hash of that id in the following format:
 
 ```
 <id>:"<hash>"
@@ -54,15 +53,7 @@ There is an SFTP server that receives message files from an external system. The
 <id>:"<hash>"
 ```
 
-The SFTP server is located conveniently on:
-
-```
-localhost, port 2222
-```
-
-If necessary, the SFTP content should be visible also at rpa-case/data/sftp.
-
-When these messages arrive, a person will read the SFTP server content from time to time and fetch any new file into processing. The files are removed from the server when they are picked. The person will send the content of each message to special message checker API as an HTTP POST with JSON content as follows:
+When messages arrive, a person will read the content of the messages folder from time to time and process new files. The files are removed from the folder when they are picked. The person will send the content of each message to special message checker API as an HTTP POST with JSON content as follows:
 
 ```
 curl -H "Content-Type: application/json" -X POST -d '{"id":123,"hash":"a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"}' localhost:1881/checkMessage

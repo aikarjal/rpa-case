@@ -1,21 +1,12 @@
 version: '3'
 services:
-  sftp-server:
-    image: atmoz/sftp
-    container_name: sftp-server
-    ports:
-      - "2222:22"
-    volumes:
-      - ./data/sftp:/home/user/upload
-    command: user:password:1001
-
   message-check-api:
     build: application/message-check-api
     container_name: message-check-api
     ports:
      - "1881:1880"
     volumes:
-     - ./data/message-check-api:/data
+     - ./application/message-check-api/data:/data
 
   web-app:
     build: application/web-app
@@ -23,10 +14,14 @@ services:
     ports:
      - "1880:1880"
     volumes:
-     - ./data/web-app:/data
+     - ./application/web-app/data:/data
     depends_on:
       - database-server
 
   database-server:
-    image: mongo
+    build: application/database-server
     container_name: database-server
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./application/database-server/data:/data/db
